@@ -19,23 +19,14 @@ edition = "2021"
 [dependencies]
 simple_logger = "5.0.0"
 tokio = { version = "1", features = ["full"] }
-thiserror = "1"
 tonic = "0.12.3"
 tonic-reflection = "0.12.3"
 prost = "0.13.3"
 prost-types = "0.13.3"
-serde_yaml = "0.9"
-log = "0.4"
-url = "2"
-actix-web = "4.1"
-actix-rt = "2"
-serde = { version = "1", features = ["derive"] }
-notify = "6.0.1"
 const_format = "0.2.31"
-lazy_static = "1.4.0"
+log = "0.4"
+actix-rt = "2"
 clap = "4.3"
-sysinfo = "0.30.10"
-openssl = { version = "0.10.66", features = ["vendored"] }
 
 [build-dependencies]
 tonic-build = "0.11"
