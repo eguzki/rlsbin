@@ -4,12 +4,12 @@
 
 # Use bullseye as build image instead of Bookworm as ubi9 does not not have GLIBCXX_3.4.30
 # https://access.redhat.com/solutions/6969351
-FROM rust:1.79.0-bullseye as builder
+FROM rust:1.79.0-bullseye AS builder
 
 RUN apt update && apt upgrade -y \
     && apt install -y protobuf-compiler clang
 
-WORKDIR /usr/src/ratelimiter
+WORKDIR /usr/src/rlsbin
 
 ARG GITHUB_SHA
 ARG CARGO_ARGS
@@ -39,16 +39,16 @@ RUN PKGS="libgcc libstdc++ shadow-utils" \
     && microdnf --assumeyes install --nodocs $PKGS \
     && rpm --verify --nogroup --nouser $PKGS \
     && microdnf -y clean all
-RUN useradd -u 1000 -s /bin/sh -m -d /home/ratelimiter ratelimiter
+RUN useradd -u 1000 -s /bin/sh -m -d /home/rlsbin rlsbin
 
-WORKDIR /home/ratelimiter/bin/
-ENV PATH="/home/ratelimiter/bin:${PATH}"
+WORKDIR /home/rlsbin/bin/
+ENV PATH="/home/rlsbin/bin:${PATH}"
 
-COPY --from=builder /usr/src/ratelimiter/target/release/ratelimiter ./ratelimiter
+COPY --from=builder /usr/src/rlsbin/target/release/rlsbin ./rlsbin
 
-RUN chown -R ratelimiter:root /home/ratelimiter \
-    && chmod -R 750 /home/ratelimiter
+RUN chown -R rlsbin:root /home/rlsbin \
+    && chmod -R 750 /home/rlsbin
 
-USER ratelimiter
+USER rlsbin
 
-CMD ["ratelimiter"]
+CMD ["rlsbin"]
