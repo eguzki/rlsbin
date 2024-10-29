@@ -1,0 +1,58 @@
+---
+services:
+  rlsbin:
+    build:
+      context: ${PWD}
+      dockerfile: Dockerfile
+    command:
+      - rlsbin
+      - --rls-ip
+      - 0.0.0.0
+      - --rls-port
+      - "8081"
+      - --grpc-reflection-service
+      - -vvv
+    ports:
+      - 8081:8081
+  envoy:
+    image: envoyproxy/envoy:v1.31-latest
+    depends_on:
+    - rlsbin
+    - upstream
+    command:
+    - /usr/local/bin/envoy
+    - --config-path
+    - /etc/envoy.yaml
+    - --log-level
+    - info
+    - --component-log-level
+    - filter:debug,http:debug,router:debug
+    - --service-cluster
+    - proxy
+    expose:
+    - "80"
+    - "8001"
+    ports:
+    - "18000:80"
+    - "18001:8001"
+    volumes:
+    - ${PWD}/sandbox/envoy.yaml:/etc/envoy.yaml
+  upstream:
+    image: quay.io/kuadrant/authorino-examples:talker-api
+    environment:
+      PORT: 3000
+    expose:
+    - "3000"
+  start_services:
+    image: alpine
+    depends_on:
+    - envoy
+    command: >
+      /bin/sh -c "
+      while ! nc -z envoy 80;
+      do
+      echo sleeping;
+      sleep 1;
+      done;
+      echo Connected!
+      "
