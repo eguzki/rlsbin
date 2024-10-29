@@ -24,7 +24,9 @@ COPY Cargo.toml Cargo.lock ./
 RUN mkdir -p src && echo 'fn main() {}' > src/main.rs
 RUN cargo build --release ${CARGO_ARGS}
 
+COPY ./build.rs ./build.rs
 COPY ./src ./src
+COPY ./vendor ./vendor
 
 RUN cargo build --release ${CARGO_ARGS}
 

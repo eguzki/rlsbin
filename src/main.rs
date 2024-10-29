@@ -17,25 +17,16 @@ const RLSBIN_HEADER: &str = "Envoy RLS Mock Server";
 
 #[actix_rt::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let config = {
-        let (config, version) = create_config();
-        println!("{RLSBIN_HEADER} {version}");
-
-        info!("Version: {}", version);
-        info!("Using config: {:?}", config);
-        config
-    };
-
+    let (config, version) = create_config();
     simple_logger::init_with_level(config.log_level.unwrap_or(log::Level::Error)).unwrap();
+    info!("{RLSBIN_HEADER} {version}");
+    info!("Using config: {:?}", config);
 
     let envoy_rls_address = config.rlp_address();
     let grpc_reflection_service = config.grpc_reflection_service;
 
     info!("Envoy RLS server starting on {}", envoy_rls_address);
-    tokio::spawn(run_envoy_rls_server(
-        envoy_rls_address.to_string(),
-        grpc_reflection_service,
-    ));
+    run_envoy_rls_server(envoy_rls_address.to_string(), grpc_reflection_service).await?;
 
     Ok(())
 }

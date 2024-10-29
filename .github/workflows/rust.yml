@@ -30,3 +30,21 @@ jobs:
       with:
         protoc-version: '3.19.4'
     - run: cargo clippy --all-features --all-targets -- -D warnings
+  test:
+    name: Unit Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: abelfodil/protoc-action@v1
+        with:
+          protoc-version: '3.19.4'
+      - run: cargo test --all-features -vv
+  e2e:
+    name: Integration Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: abelfodil/protoc-action@v1
+        with:
+          protoc-version: '3.19.4'
+      - run: make integration_tests
