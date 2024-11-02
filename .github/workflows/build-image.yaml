@@ -12,6 +12,7 @@ on:
 env:
   IMG_REGISTRY_HOST: quay.io
   IMG_REGISTRY_ORG: eastizle
+  TEST_TAG: user/app:test
 
 jobs:
   build:
@@ -33,15 +34,28 @@ jobs:
           username: ${{ secrets.IMG_REGISTRY_USERNAME }}
           password: ${{ secrets.IMG_REGISTRY_TOKEN }}
           registry: ${{ env.IMG_REGISTRY_HOST }}
-      - name: Build and push by digest
+      - name: Build and export to docker
         id: build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: ${{ env.TEST_TAG }}
+          build-args: |
+            GITHUB_SHA=${{ github.sha }}
+      - name: Smoke Test Help
+        run: |
+          docker run --rm -t ${{ env.TEST_TAG }} rlsbin --help
+      - name: Smoke Test Version
+        run: |
+          docker run --rm -t ${{ env.TEST_TAG }} rlsbin --version
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v6
         with:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          push: true
           build-args: |
             GITHUB_SHA=${{ github.sha }}
-      - name: Smoke Test
-        run: |
-          docker run --rm -t ${{ env.IMG_REGISTRY_HOST }}/${{ env.IMG_REGISTRY_ORG }}/rlsbin:${{ steps.meta.outputs.version }} rlsbin --help
