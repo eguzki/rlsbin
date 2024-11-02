@@ -51,4 +51,4 @@ bin/grpcurl -plaintext -d @ 127.0.0.1:8081 envoy.service.ratelimit.v3.RateLimitS
 EOM
 ```
 
-> Note: make sure *rlsbin* is started with the reflection API enabled with the `--grpc-reflection-service` command line option
+> Note: This *grpcurl* command does not get the proto sources, so either provide those RLS proto sources or make sure *rlsbin* is started with the reflection API enabled with the `--grpc-reflection-service` command line option
