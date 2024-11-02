@@ -15,8 +15,28 @@ env:
   TEST_TAG: user/app:test
 
 jobs:
+  validation:
+    name: Validation
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: abelfodil/protoc-action@v1
+      with:
+        protoc-version: '3.19.4'
+    - name: Read package version
+      id: package-version
+      run: |
+        id=`cargo pkgid | cut -d "#" -f2`
+        echo id=$id>> $GITHUB_OUTPUT
+    - name: Print package version
+      run: echo "Git reference name = ${{ github.ref_name }}, package version = ${{ steps.package-version.outputs.id }}"
+    - name: Verify git reference name matches the package version
+      if: ${{ startsWith(github.ref, 'refs/tags/') and github.ref_name != steps.package-version.outputs.id }}
+      run: exit 1
   build:
     name: Build
+    needs:
+      - validation
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
