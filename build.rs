@@ -18,9 +18,11 @@ fn generate_protobuf() -> Result<(), Box<dyn Error>> {
         .compile(
             &["envoy/service/ratelimit/v3/rls.proto"],
             &[
-                "vendor/protobufs/data-plane-api",
-                "vendor/protobufs/protoc-gen-validate",
-                "vendor/protobufs/xds",
+                "vendor-protobufs/data-plane-api",
+                "vendor-protobufs/protoc-gen-validate",
+                "vendor-protobufs/xds",
+                "vendor-protobufs/googleapis",
+                "vendor-protobufs/udpa",
             ],
         )?;
     Ok(())

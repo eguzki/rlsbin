@@ -26,7 +26,7 @@ RUN cargo build --release ${CARGO_ARGS}
 
 COPY ./build.rs ./build.rs
 COPY ./src ./src
-COPY ./vendor ./vendor
+COPY ./vendor-protobufs ./vendor-protobufs
 
 RUN cargo build --release ${CARGO_ARGS}
 
