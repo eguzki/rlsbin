@@ -20,7 +20,10 @@ pub mod envoy {
     pub mod extensions {
         pub mod common {
             pub mod ratelimit {
-                #[allow(clippy::derive_partial_eq_without_eq)]
+                #[allow(
+                    clippy::derive_partial_eq_without_eq,
+                    clippy::doc_overindented_list_items
+                )]
                 pub mod v3 {
                     tonic::include_proto!("envoy.extensions.common.ratelimit.v3");
                 }
