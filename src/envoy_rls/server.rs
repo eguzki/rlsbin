@@ -98,6 +98,7 @@ mod tests {
                     },
                 ],
                 limit: None,
+                hits_addend: None,
             }],
             hits_addend: 1,
         };
@@ -127,6 +128,7 @@ mod tests {
                     },
                 ],
                 limit: None,
+                hits_addend: None,
             }],
             hits_addend: 1,
         };
